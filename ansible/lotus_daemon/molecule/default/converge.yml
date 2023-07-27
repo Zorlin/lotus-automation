@@ -1,7 +1,30 @@
 ---
 - name: Converge
   hosts: all
+
+  vars:
+    lotus_user: lotus
+    lotus_group: lotus
+
   tasks:
-    - name: "Include zorlin.lotus_daemon"
+    - name: Create Lotus system group
+      ansible.builtin.group:
+        name: "{{ lotus_group }}"
+        system: true
+        state: present
+
+    - name: Create Lotus system user
+      ansible.builtin.user:
+        name: "{{ lotus_user }}"
+        comment: "Lotus Daemon User"
+        shell: /bin/bash
+        system: true
+        createhome: true
+        group: "{{ lotus_group }}"
+        groups: "sudo,adm"
+        append: true
+        state: present
+
+    - name: Include zorlin.lotus_daemon
       ansible.builtin.include_role:
         name: "zorlin.lotus_daemon"
