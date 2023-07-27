@@ -6,10 +6,8 @@ driver:
 platforms:
   - name: lotus_stable
     image: docker.io/eniocarboni/docker-ubuntu-systemd:22.04
-    pre_build_image: true
   - name: lotus_oldstable
     image: docker.io/eniocarboni/docker-ubuntu-systemd:20.04
-    pre_build_image: true
 provisioner:
   name: ansible
 verifier:
