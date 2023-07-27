@@ -7,10 +7,15 @@
     lotus_group: lotus
 
   tasks:
+    - name: Enable the "universe" apt repository
+      ansible.builtin.apt_repository:
+        repo: "deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} universe"
+        state: present
+        update_cache: false
+
     - name: Update apt cache
       ansible.builtin.apt:
         update_cache: true
-        cache_valid_time: 3600
 
     - name: Ensure all packages are up to date
       ansible.builtin.apt:
