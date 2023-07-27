@@ -4,4 +4,10 @@
   include_tasks: 01-install_prerequisites.yml
 
 - name: Set system limits
-  include_tasks: 02-set_system_limits.yml
+  ansible.builtin.template:
+    src: 10-fil-lotus.conf.j2
+    dest: /etc/security/limits.d/10-fil-lotus.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: Reload systemd
