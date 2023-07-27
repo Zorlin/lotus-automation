@@ -1,2 +1,7 @@
 ---
 # tasks file for lotus_daemon
+- name: Install prerequisites
+  include_tasks: 01-install_prerequisites.yml
+
+- name: Set system limits
+  include_tasks: 02-set_system_limits.yml
