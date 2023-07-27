@@ -51,3 +51,4 @@ galaxy_info:
 dependencies:
   - name: "geerlingguy.nodejs"
   - name: "gantsign.golang"
+  - name: "nvidia.nvidia_driver"
