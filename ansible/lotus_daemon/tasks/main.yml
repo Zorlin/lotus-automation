@@ -3,11 +3,13 @@
 - name: Install prerequisites
   include_tasks: 01-install_prerequisites.yml
 
-- name: Set system limits
-  ansible.builtin.template:
-    src: 10-fil-lotus.conf.j2
-    dest: /etc/security/limits.d/10-fil-lotus.conf
-    owner: root
-    group: root
-    mode: 0644
-  notify: Reload systemd
+- name: Set limits and sysctl settings
+  include_tasks: 02-set_limits_and_sysctl.yml
+
+- name: Create log folder
+  ansible.builtin.file:
+    path: "{{ log_dir }}"
+    state: directory
+    owner: "{{ lotus_user }}"
+    group: "{{ lotus_group }}"
+    mode: 0700

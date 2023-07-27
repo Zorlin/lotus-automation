@@ -3,5 +3,29 @@
 lotus_user: lotus
 lotus_group: lotus
 create_lotus_system_user: true
-nodejs_version: 18.x
-nodejs_install_npm_user: "{{ lotus_user }}"
+
+# Check which version of Lotus matches with which version of Boost and Go: https://boost.filecoin.io/getting-started
+lotus_version: "v1.23.2"
+golang_version: "1.20.4"
+boost_version: "v1.7.2"
+
+# Build Lotus for Calibration testnet instead of mainnet: y / n
+# if "true", use the Faucet to give your wallets test FIL: https://faucet.calibration.fildev.network/
+use_calibrationnet: true
+
+# Choose the sector size for your miner: 32GiB / 64GiB
+sector_size: "32GiB"
+
+# Choose location for the Lotus log file(s)
+log_dir: "/var/log/lotus"
+
+# Choose location for the miner proof cache. This needs to be fast storage, ideally NVMe, and requires ca.150GiB.
+param_cache: "/opt/cache/param_cache"
+parent_cache: "/opt/cache/parent_cache"
+
+# Choose location where Lotus backups will be stored
+lotus_backup_base_path: "/opt/backup"
+
+# Choose location for lotus-miner and lotus. The chain is stored under LOTUS_PATH. This requires fast storage (SSD or NVMe)
+lotus_miner_path: "/opt/.lotusminer"
+lotus_path: "/opt/.lotus"

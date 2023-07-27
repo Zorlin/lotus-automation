@@ -50,3 +50,4 @@ galaxy_info:
 
 dependencies:
   - name: "geerlingguy.nodejs"
+  - name: "gantsign.golang"

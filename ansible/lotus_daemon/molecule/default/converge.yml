@@ -5,14 +5,11 @@
   vars:
     lotus_user: lotus
     lotus_group: lotus
+    nodejs_version: 18.x
+    nodejs_install_npm_user: "{{ lotus_user }}"
+    golang_version: "1.20.4"
 
   tasks:
-    - name: Enable the "universe" apt repository
-      ansible.builtin.apt_repository:
-        repo: "deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} universe"
-        state: present
-        update_cache: false
-
     - name: Update apt cache
       ansible.builtin.apt:
         update_cache: true
