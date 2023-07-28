@@ -22,4 +22,4 @@
   set_fact:
     has_sha256: "{{ 'sha256' in cpu_flags }}"
     has_sha_ni: "{{ 'sha_ni' in cpu_flags }}"
-  run_once: True
+
