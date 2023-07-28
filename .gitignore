@@ -1,0 +1,5 @@
+**/secrets.yml
+**/secret.yml
+ansible/group_vars/all
+ansible/host_vars/*
+ansible/inventory
