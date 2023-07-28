@@ -8,7 +8,7 @@
     nodejs_version: 18.x
     nodejs_install_npm_user: "{{ lotus_user }}"
     golang_version: "1.20.4"
-    nvidia_driver_skip_reboot: true
+    rustup_configure_shell: false
 
   tasks:
     - name: Update apt cache
@@ -35,15 +35,6 @@
         group: "{{ lotus_group }}"
         groups: "sudo,adm"
         append: true
-        state: present
-
-    # Hacks for snapd compatibility with Podman/Docker
-    - name: Install container dependencies
-      ansible.builtin.package:
-        name:
-          - snapd
-          - squashfuse
-          - fuse
         state: present
 
     - name: Include zorlin.lotus_daemon
