@@ -37,6 +37,15 @@
         append: true
         state: present
 
+    # Hacks for snapd compatibility with Podman/Docker
+    - name: Install container dependencies
+      ansible.builtin.package:
+        name:
+          - snapd
+          - squashfuse
+          - fuse
+        state: present
+
     - name: Include zorlin.lotus_daemon
       ansible.builtin.include_role:
         name: "zorlin.lotus_daemon"
