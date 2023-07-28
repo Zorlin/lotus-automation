@@ -4,6 +4,9 @@ lotus_user: lotus
 lotus_group: lotus
 create_lotus_system_user: true
 
+# URL of the Lotus git repository
+lotus_git_repo: "https://github.com/filecoin-project/lotus.git"
+
 # Check which version of Lotus matches with which version of Boost and Go: https://boost.filecoin.io/getting-started
 lotus_version: "v1.23.2"
 golang_version: "1.20.4"
@@ -18,6 +21,9 @@ sector_size: "32GiB"
 
 # Choose location for the Lotus log file(s)
 log_dir: "/var/log/lotus"
+
+# Build directory for building software. Originally "${INSTALL_DIR}".
+build_dir: "/usr/local/src/"
 
 # Choose location for the miner proof cache. This needs to be fast storage, ideally NVMe, and requires ca.150GiB.
 param_cache: "/opt/cache/param_cache"
