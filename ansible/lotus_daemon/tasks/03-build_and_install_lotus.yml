@@ -23,3 +23,16 @@
     has_sha256: "{{ 'sha256' in cpu_flags }}"
     has_sha_ni: "{{ 'sha_ni' in cpu_flags }}"
 
+- name: Set build flags if SHA256 extensions were found
+  set_fact:
+    build_flags: "export RUSTFLAGS="-C target-cpu=native -g ; export FFI_BUILD_FROM_SOURCE=1 ; export FFI_USE_MULTICORE_SDR=0"
+  when:
+    - has_sha256
+    - has_sha_ni
+
+- name: Set build flags if SHA256 extensions were not found
+  set_fact:
+    build_flags: "export FFI_USE_MULTICORE_SDR=0"
+  when:
+    - not has_sha256
+    - not has_sha_ni
