@@ -30,7 +30,7 @@
         append: true
 
   roles:
-    - zorlin.lotus_daemon
     - { role: nvidia.nvidia_driver, when: install_nvidia_driver | bool }
+    - zorlin.lotus_daemon
     #- zorlin.lotus_miner
     #- zorlin.fil_boost
