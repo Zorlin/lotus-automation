@@ -75,11 +75,17 @@
     cmd: "source /etc/profile.d/golang.sh ; source $HOME/.cargo/env ; {{ build_flags }} ; make -j{{ ansible_processor_vcpus }} clean all"
     chdir: "{{ build_dir }}/lotus"
     executable: /bin/bash
-  when: not use_calibrationnet
+  when: not use_calibrationnet and lotus_build_required | default(false)
 
 - name: Build Lotus for calibnet
   ansible.builtin.shell:
     cmd: "source /etc/profile.d/golang.sh ; source $HOME/.cargo/env ; {{ build_flags }} ; make -j{{ ansible_processor_vcpus }} clean calibnet"
     chdir: "{{ build_dir }}/lotus"
     executable: /bin/bash
-  when: use_calibrationnet
+  when: use_calibrationnet and lotus_build_required | default(false)
+
+- name: Install Lotus
+  make:
+    chdir: "{{ build_dir }}/lotus"
+    target: install
+  when: lotus_build_required | default(true)
