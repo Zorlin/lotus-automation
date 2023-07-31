@@ -15,3 +15,5 @@ lotus_nvidia_skip_reboot: false
 # By default we do not attempt to install the NVIDIA GPU drivers. This is to keep compatibility with AMD GPU-equipped systems.
 # Set this to true to install the drivers.
 install_nvidia_driver: false
+# If we install the NVIDIA drivers, install the latest version
+nvidia_driver_ubuntu_cuda_package: "cuda-drivers-535"

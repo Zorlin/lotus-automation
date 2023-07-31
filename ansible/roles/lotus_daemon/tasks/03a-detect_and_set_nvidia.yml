@@ -84,10 +84,10 @@
   ignore_errors: True
   when: gpu_detected | bool
 
-# - name: Now, let's install the CUDA toolkit so we can get more information about our GPU.
-#   ansible.builtin.package:
-#     name: cuda-toolkit
-#     state: present
+- name: Now, let's install the CUDA toolkit so we can get more information about our GPU.
+  ansible.builtin.package:
+    name: cuda-toolkit-12-2
+    state: present
 
 - name: Download the CUDA Samples so we can get more information about our GPU.
   ansible.builtin.git:
