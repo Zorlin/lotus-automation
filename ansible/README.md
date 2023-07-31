@@ -12,7 +12,7 @@ git clone https://github.com/Zorlin/lotus-automation.git && cd lotus-automation
 ```
 - Copy `ansible/inventory.example` to `ansible/inventory` and edit it to suit your needs.
 ```
-cp ansible/inventory.example ansible/inventory && editor inventory
+cp ansible/inventory.example ansible/inventory && editor ansible/inventory
 ```
 - Copy `ansible/group_vars/all.example` to `ansible/group_vars/all` and edit it to suit your needs.
 ```
