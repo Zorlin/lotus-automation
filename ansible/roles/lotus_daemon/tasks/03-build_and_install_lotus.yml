@@ -14,6 +14,13 @@
     gpu_details: ""
   when: gpu_details is not defined
 
+- name: Check if Lotus is installed (and if so, what version it is)
+  shell: "/usr/local/bin/lotusd --version"
+  register: lotus_version_installed
+  changed_when: false
+  failed_when: false
+  ignore_errors: true
+
 - name: Detect and set gpu_details if a NVIDIA card is present
   include_tasks: 03a-detect_and_set_nvidia.yml
 
@@ -43,6 +50,12 @@
 #     group: "{{ lotus_user }}"
 #     mode: '0755'
 
+- name: Print build flags
+  debug:
+    msg:
+      - "We will build lotusd with these build flags: {{ build_flags }}."
+      - "Mainnet: {{ not use_calibrationnet }}"
+
 - name: Check out Lotus
   ansible.builtin.git:
     repo: "{{ lotus_git_repo }}"
@@ -51,3 +64,22 @@
     accept_newhostkey: true
     recursive: true
   become: true
+
+- name: Determine if we need to build Lotus
+  set_fact:
+    lotus_build_required: "{{ lotus_version != lotus_version_installed }}"
+  when: lotus_version_installed is defined
+
+- name: Build Lotus for mainnet
+  ansible.builtin.shell:
+    cmd: "source /etc/profile.d/golang.sh ; source $HOME/.cargo/env ; {{ build_flags }} ; make -j{{ ansible_processor_vcpus }} clean all"
+    chdir: "{{ build_dir }}/lotus"
+    executable: /bin/bash
+  when: not use_calibrationnet
+
+- name: Build Lotus for calibnet
+  ansible.builtin.shell:
+    cmd: "source /etc/profile.d/golang.sh ; source $HOME/.cargo/env ; {{ build_flags }} ; make -j{{ ansible_processor_vcpus }} clean calibnet"
+    chdir: "{{ build_dir }}/lotus"
+    executable: /bin/bash
+  when: use_calibrationnet

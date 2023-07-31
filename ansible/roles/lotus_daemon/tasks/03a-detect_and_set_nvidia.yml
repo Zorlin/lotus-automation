@@ -34,7 +34,7 @@
   when:
     - install_nvidia_driver | bool and not gpu_detected | bool
 
-- name: If the user is running Ubuntu 22.04, inform them of the secure boot requirements
+- name: If the node has Secure Boot enabled, inform the user of the secure boot requirements
   debug:
     msg:
       - "We expected a working NVIDIA card and driver install but did not find one."
@@ -100,6 +100,24 @@
 
 - name: Build the deviceQuery CUDA sample utility
   make:
-    chdir: /usr/local/src/cuda-samples/Samples/deviceQuery
+    chdir: /usr/local/src/cuda-samples/Samples/1_Utilities/deviceQuery
   become: true
+  when: gpu_detected | bool
+
+- name: Run the deviceQuery CUDA sample utility to get more information about our GPU.
+  shell: /usr/local/src/cuda-samples/Samples/1_Utilities/deviceQuery/deviceQuery
+  register: device_query_output
+  changed_when: False
+  failed_when: False
+  ignore_errors: True
+  when: gpu_detected | bool
+
+- name: Parse the output of the deviceQuery utility to fetch the number of CUDA cores
+  set_fact:
+    cuda_cores: "{{ device_query_output.stdout | regex_findall('\\b\\d+ CUDA Cores\\b') | first | regex_replace(' CUDA Cores', '') }}"
+  when: gpu_detected | bool
+
+- name: Build and set the GPU tuning parameters
+  set_fact:
+    gpu_details: "{{ nvidia_gpu_name.stdout }}:{{ cuda_cores }}"
   when: gpu_detected | bool
