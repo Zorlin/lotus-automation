@@ -16,3 +16,6 @@
 
 - name: Build and install Lotus
   include_tasks: 03-build_and_install_lotus.yml
+
+- name: Download chain snapshots
+  include_tasks: 04-import_chain_snapshot.yml

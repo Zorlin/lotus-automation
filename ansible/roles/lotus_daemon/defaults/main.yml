@@ -16,6 +16,9 @@ boost_version: "v1.7.2"
 # if "true", use the Faucet to give your wallets test FIL: https://faucet.calibration.fildev.network/
 use_calibrationnet: true
 
+# Download location for chain snapshot
+chain_snapshot_dir: "filecoin_snapshots"
+
 # Choose the sector size for your miner: 32GiB / 64GiB
 sector_size: "32GiB"
 
