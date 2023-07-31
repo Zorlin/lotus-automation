@@ -29,6 +29,9 @@ ansible-galaxy install -r roles/requirements.yml && ansible-galaxy install -r co
 - Now run `ansible-playbook deploy.yml` to run the playbook and deploy your Lotus node.
 - The playbook will automatically deploy everything, and ask you questions if it needs any more information from you. If you run into any issues, please let us know by opening an issue on this repository.
 
+## Secure boot on Ubuntu 22.04
+Due to a bug in the NVIDIA driver packages (or possibly their Ansible role), you may find yourself unable to use the NVIDIA driver after installation. If you run into this, please run `sudo dpkg-reconfigure nvidia-dkms-525-server` (replacing 525 with your driver version) and follow the steps, then reboot and select "Enroll MOK", then reboot one last time.
+
 ## Notes
 - This is a work in progress and is not yet ready for use.
 - Ansible Molecule is to be used for testing and developing the individual roles.
