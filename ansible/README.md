@@ -5,6 +5,7 @@ This is an experimental port of lotus-automation to Ansible.
 - A modern version of Ansible and Python3 (a specific minimum version will be specified at a later date).
 - All requirements specified in the [lotus-automation README](../README.md#requirements).
 - Passwordless sudo enabled on your Lotus node (alternatively, add the flags --become and --ask-become-pass when running ansible-playbook)
+- If you are using Secure Boot on your Lotus node, please read [the note on Secure Boot](#note-on-secure-boot).
 
 ## Usage
 - Clone this repository and `cd` into it
@@ -33,8 +34,10 @@ ansible-playbook deploy.yml
 ```
 - The playbook will automatically deploy everything, and ask you questions if it needs any more information from you. If you run into any issues, please let us know by opening an issue on this repository.
 
-## Secure boot on Ubuntu 22.04
-If you are using Ubuntu 22.04 with Secure Boot enabled (likely if you are on a modern UEFI machine) - due to a bug in the NVIDIA driver packages (or possibly their Ansible role), you may find yourself unable to use the NVIDIA driver after installation. If you run into this, please run `sudo dpkg-reconfigure nvidia-dkms-525-server` (replacing 525 with your driver version) and follow the steps, then reboot and select "Enroll MOK", then reboot one last time.
+## Note on Secure Boot
+If you are using Ubuntu with Secure Boot enabled (likely if you are on a modern UEFI machine), due to a bug in the NVIDIA driver packages (or possibly their Ansible role), you may find yourself unable to use the NVIDIA driver after installation. 
+
+If you run into this, please run `sudo dpkg-reconfigure nvidia-dkms-525-server` (replacing 525 with your driver version - for example, 515 on Ubuntu 20.04) and follow the steps, then reboot and select "Enroll MOK", then reboot one last time, then re-run the playbook.
 
 ## Notes
 - This is a work in progress and is not yet ready for use.
