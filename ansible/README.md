@@ -4,6 +4,7 @@ This is an experimental port of lotus-automation to Ansible.
 ## Requirements
 - A modern version of Ansible and Python3 (a specific minimum version will be specified at a later date).
 - All requirements specified in the [lotus-automation README](../README.md#requirements).
+- Passwordless sudo enabled on your Lotus node (alternatively, add the flags --become and --ask-become-pass when running ansible-playbook)
 
 ## Usage
 - Clone this repository and `cd` into it
@@ -26,7 +27,10 @@ cd ansible
 ```
 ansible-galaxy install -r roles/requirements.yml
 ```
-- Now run `ansible-playbook deploy.yml` to run the playbook and deploy your Lotus node.
+- Now run the playbook and deploy your Lotus node.
+```
+ansible-playbook deploy.yml
+```
 - The playbook will automatically deploy everything, and ask you questions if it needs any more information from you. If you run into any issues, please let us know by opening an issue on this repository.
 
 ## Secure boot on Ubuntu 22.04
