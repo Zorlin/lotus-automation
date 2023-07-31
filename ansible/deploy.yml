@@ -29,6 +29,14 @@
         groups: "sudo,adm"
         append: true
 
+    - name: Create Lotus log directory
+      ansible.builtin.file:
+        path: "{{ log_dir }}"
+        state: directory
+        owner: "{{ lotus_user }}"
+        group: "{{ lotus_group }}"
+        mode: 0750
+
   roles:
     - { role: nvidia.nvidia_driver, when: install_nvidia_driver | bool }
     - zorlin.lotus_daemon

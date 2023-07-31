@@ -1,0 +1,84 @@
+---
+- name: Ensure chain snapshot download directory exists
+  ansible.builtin.file:
+    path: "/home/{{ lotus_user }}/{{ chain_download_dir }}"
+    state: directory
+    owner: "{{ lotus_user }}"
+    group: "{{ lotus_group }}"
+    mode: '0755'
+  become_user: "{{ lotus_user }}"
+  become: true
+
+- name: Download latest chain snapshot
+  shell:
+    cmd: "aria2c -x5 https://snapshots.{{ 'calibrationnet' if use_calibrationnet else 'mainnet' }}.filops.net/minimal/latest.zst -o latest-lotus-snapshot.zst"
+    creates: "/home/{{ lotus_user }}/{{ chain_download_dir }}/latest-lotus-snapshot.zst"
+    chdir: "/home/{{ lotus_user }}/{{ chain_download_dir }}"
+  async: 86400
+  poll: 0
+  register: download_chain_snapshot
+  become_user: "{{ lotus_user }}"
+  become: true
+
+- name: Check on chain snapshot download (this will take a while, and show "FAILED" periodically until it succeeds)
+  async_status:
+    jid: "{{ download_chain_snapshot.ansible_job_id }}"
+  register: download_chain_snapshot_status
+  until: download_chain_snapshot_status.finished
+  retries: 2880
+  delay: 30
+  when: download_chain_snapshot is defined
+  become_user: "{{ lotus_user }}"
+  become: true
+
+- name: Ensure chain snapshot directory exists
+  ansible.builtin.file:
+    path: "{{ lotus_chain_path }}"
+    state: directory
+    owner: "{{ lotus_user }}"
+    group: "{{ lotus_group }}"
+    mode: '0755'
+
+- name: Import chain snapshot
+  shell:
+    cmd: "export LOTUS_PATH={{ lotus_chain_path }} ; nohup lotus daemon --import-snapshot {{ chain_download_dir }}/latest.zst > {{ log_dir }}/lotus-import-snapshot.log 2>&1 &"
+    executable: /bin/bash
+  become_user: "{{ lotus_user }}"
+  become: true
+  when: download_chain_snapshot_status.finished
+
+- name: Wait for Lotus to import the chain snapshot (this will take a while, and show "FAILED" periodically until it succeeds)
+  shell:
+    cmd: "grep -q 'parameter and key-fetching complete' {{ log_dir }}/lotus-import-snapshot.log"
+    executable: /bin/bash
+  become_user: "{{ lotus_user }}"
+  become: true
+  register: import_chain_snapshot_status
+  until: import_chain_snapshot_status.rc == 0
+  retries: 10000
+  delay: 30
+  when: download_chain_snapshot_status.finished
+
+# These steps are disabled as they don't actually seem to do anything -
+# without Lotus running as a daemon, no synchronisation occurs and any attempt to run "lotus sync wait" results in blank output from Lotus.
+# We may want to move these somewhere later in the playbook/roles, or remove them entirely.
+
+# - name: Synchronise Lotus with the network
+#   shell:
+#     cmd: "export LOTUS_PATH={{ lotus_chain_path }} ; nohup lotus sync wait > {{ log_dir }}/lotus-daemon.log 2>&1 &"
+#     executable: /bin/bash
+#   become_user: "{{ lotus_user }}"
+#   become: true
+#   when: import_chain_snapshot_status.rc == 0
+
+# - name: Ensure Lotus is synchronised with the network (this will take a while, and show "FAILED" periodically until it succeeds)
+#   shell:
+#     cmd: "grep -q 'parameter and key-fetching complete' {{ log_dir }}/lotus-import-snapshot.log"
+#     executable: /bin/bash
+#   become_user: "{{ lotus_user }}"
+#   become: true
+#   register: import_chain_snapshot_status
+#   until: import_chain_snapshot_status.rc == 0
+#   retries: 10000
+#   delay: 30
+#   when: download_chain_snapshot_status.finished
