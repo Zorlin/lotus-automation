@@ -6,11 +6,16 @@ This is an experimental port of lotus-automation to Ansible.
 - All requirements specified in the [lotus-automation README](../README.md#requirements).
 
 ## Usage
-- Clone this repository.
+- Clone this repository and `cd` into it
+`git clone https://github.com/Zorlin/lotus-automation.git && cd lotus-automation`
 - Copy `ansible/inventory.example` to `ansible/inventory` and edit it to suit your needs.
+`cp ansible/inventory.example ansible/inventory && editor inventory`
 - Copy `ansible/group_vars/all.example` to `ansible/group_vars/all` and edit it to suit your needs.
+`cp ansible/group_vars/all.example ansible/group_vars/all && editor ansible/group_vars/all`
 - Change into the `ansible` directory.
-- If this is your first time running lotus-automation for Ansible on this machine, run `ansible-galaxy install -r roles/requirements.yml && ansible-galaxy install -r collections/requirements.yml`
+`cd ansible`
+- If this is your first time running lotus-automation for Ansible on this machine, run the Ansible Galaxy install process.
+`ansible-galaxy install -r roles/requirements.yml && ansible-galaxy install -r collections/requirements.yml`
 - Now run `ansible-playbook deploy.yml` to run the playbook and deploy your Lotus node.
 - The playbook will automatically deploy everything, and ask you questions if it needs any more information from you. If you run into any issues, please let us know by opening an issue on this repository.
 
