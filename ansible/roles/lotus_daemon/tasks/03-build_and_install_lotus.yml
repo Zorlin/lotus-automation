@@ -1,4 +1,5 @@
 ---
+# Here we attempt to automatically detect what CPU flags and optimisations are available.
 - name: Execute lscpu to get CPU flags
   command:
     cmd: lscpu
@@ -15,7 +16,7 @@
   when: gpu_details is not defined
 
 - name: Check if Lotus is installed (and if so, what version it is)
-  shell: "/usr/local/bin/lotusd --version"
+  shell: "/usr/local/bin/lotus --version"
   register: lotus_version_installed
   changed_when: false
   failed_when: false
@@ -65,21 +66,40 @@
     recursive: true
   become: true
 
+# If we have a version of Lotus installed, but our configuration indicates we should have a different version installed, we need to build Lotus.
+# If Lotus isn't installed, we need to build it and install it.
+# We also need to build Lotus if we have a calibnet version installed, but our configuration indicates we should have a mainnet build installed.
 - name: Determine if we need to build Lotus
   set_fact:
-    lotus_build_required: "{{ lotus_version != lotus_version_installed }}"
+    lotus_build_required: "{{ lotus_version | regex_replace('^v', '') not in lotus_version_installed.stdout }}"
   when: lotus_version_installed is defined
+
+- name: Determine if we have a calibnet version of Lotus installed, but want a mainnet build
+  set_fact:
+    lotus_build_required: true
+  when: not use_calibrationnet and lotus_version_installed is defined and (lotus_version_installed.stdout | regex_search('calibnet'))
+
+- name: Determine if we have a mainnet version of Lotus installed, but want a calibnet build
+  set_fact:
+    lotus_build_required: true
+  when: use_calibrationnet and lotus_version_installed is defined and not (lotus_version_installed.stdout | regex_search('calibnet'))
+
+- name: Clean our build directories if we need to build Lotus
+  make:
+    chdir: "{{ build_dir }}/lotus"
+    target: clean
+  when: lotus_build_required | default(false)
 
 - name: Build Lotus for mainnet
   ansible.builtin.shell:
-    cmd: "source /etc/profile.d/golang.sh ; source $HOME/.cargo/env ; {{ build_flags }} ; make -j{{ ansible_processor_vcpus }} clean all"
+    cmd: "source /etc/profile.d/golang.sh ; source $HOME/.cargo/env ; {{ build_flags }} ; make -j{{ ansible_processor_vcpus }} all"
     chdir: "{{ build_dir }}/lotus"
     executable: /bin/bash
   when: not use_calibrationnet and lotus_build_required | default(false)
 
 - name: Build Lotus for calibnet
   ansible.builtin.shell:
-    cmd: "source /etc/profile.d/golang.sh ; source $HOME/.cargo/env ; {{ build_flags }} ; make -j{{ ansible_processor_vcpus }} clean calibnet"
+    cmd: "source /etc/profile.d/golang.sh ; source $HOME/.cargo/env ; {{ build_flags }} ; make -j{{ ansible_processor_vcpus }} calibnet"
     chdir: "{{ build_dir }}/lotus"
     executable: /bin/bash
   when: use_calibrationnet and lotus_build_required | default(false)
@@ -88,4 +108,4 @@
   make:
     chdir: "{{ build_dir }}/lotus"
     target: install
-  when: lotus_build_required | default(true)
+  when: lotus_build_required | default(false)

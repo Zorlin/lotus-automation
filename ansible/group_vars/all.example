@@ -17,3 +17,5 @@ lotus_nvidia_skip_reboot: false
 install_nvidia_driver: false
 # If we install the NVIDIA drivers, install the latest version
 nvidia_driver_ubuntu_cuda_package: "cuda-drivers-535"
+# If you are ready for mainnet, change this to false. See the docs if you're not sure!
+use_calibrationnet: true
