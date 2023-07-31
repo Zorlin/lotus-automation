@@ -37,3 +37,9 @@
 
 - name: Check Lotus reachability
   include_tasks: 07-check_lotus_reachability.yml
+
+- name: Check that Lotus is synced
+  include_tasks: 08-check_lotus_synced.yml
+
+- name: Initialize Lotus miner
+  include_tasks: 09-initialize_lotus_miner.yml

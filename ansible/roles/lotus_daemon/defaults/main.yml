@@ -50,3 +50,6 @@ lotus_miner_path: /opt/.lotusminer
 
 # If true, skip the automatic reboot we perform if the NVIDIA driver is installed but the driver is not active
 lotus_nvidia_skip_reboot: false
+
+# Minimum amount of FIL for a wallet to be considered funded. This is used to determine if a wallet is ready to be used for mining.
+wallet_fund_threshold: 0.1

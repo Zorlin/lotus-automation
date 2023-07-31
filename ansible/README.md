@@ -39,6 +39,9 @@ If you are using Ubuntu with Secure Boot enabled (likely if you are on a modern 
 
 If you run into this, please run `sudo dpkg-reconfigure nvidia-dkms-525-server` (replacing 525 with your driver version - for example, 515 on Ubuntu 20.04) and follow the steps, then reboot and select "Enroll MOK", then reboot one last time, then re-run the playbook.
 
+## Wallet management
+This Ansible playbook will attempt rudimentary wallet management for you. This depends on the owner wallet being in position #0 in `lotus wallet list`, and the worker wallet being in position #1. Please let us know if you have special requirements that conflict with this, and we'll help you work around this dependency.
+
 ## Notes
 - This is a work in progress and is not yet ready for use.
 - Ansible Molecule is to be used for testing and developing the individual roles.

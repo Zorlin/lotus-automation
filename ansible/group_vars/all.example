@@ -37,6 +37,9 @@ install_nvidia_driver: false
 # If we install the NVIDIA drivers, install the latest version
 nvidia_driver_ubuntu_cuda_package: "cuda-drivers-535"
 
+# Minimum amount of FIL for a wallet to be considered funded. This is used to determine if a wallet is ready to be used for mining.
+wallet_fund_threshold: 0.1
+
 # If you are ready for mainnet, you know what to do here. See the docs if you're not sure!
 use_calibrationnet: true
 ready_for_mainnet: false
