@@ -24,7 +24,7 @@ cd ansible
 ```
 - If this is your first time running lotus-automation for Ansible on this machine, run the Ansible Galaxy install process.
 ```
-ansible-galaxy install -r roles/requirements.yml && ansible-galaxy install -r collections/requirements.yml
+ansible-galaxy install -r roles/requirements.yml
 ```
 - Now run `ansible-playbook deploy.yml` to run the playbook and deploy your Lotus node.
 - The playbook will automatically deploy everything, and ask you questions if it needs any more information from you. If you run into any issues, please let us know by opening an issue on this repository.
