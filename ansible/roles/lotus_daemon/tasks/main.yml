@@ -17,5 +17,23 @@
 - name: Build and install Lotus
   include_tasks: 03-build_and_install_lotus.yml
 
+- name: Ensure Lotus path is in the Lotus user's ~/.profile file
+  ansible.builtin.lineinfile:
+    path: "/home/{{ lotus_user }}/.profile"
+    line: "export LOTUS_PATH={{ lotus_path }}"
+    state: present
+    create: true
+    owner: "{{ lotus_user }}"
+    group: "{{ lotus_group }}"
+
 - name: Download chain snapshots
   include_tasks: 04-import_chain_snapshot.yml
+
+- name: Install systemd service and environment for Lotus and start Lotus
+  include_tasks: 05-systemd_service.yml
+
+- name: Synchronize and initialize Lotus
+  include_tasks: 06-initialize_lotus.yml
+
+- name: Check Lotus reachability
+  include_tasks: 07-check_lotus_reachability.yml

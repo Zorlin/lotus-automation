@@ -109,3 +109,7 @@
     chdir: "{{ build_dir }}/lotus"
     target: install
   when: lotus_build_required | default(false)
+  notify: Restart Lotus daemon
+
+- name: Flush handlers to restart Lotus if needed
+  meta: flush_handlers
