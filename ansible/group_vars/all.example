@@ -1,8 +1,17 @@
 ---
+# Lotus user and group name
 lotus_user: lotus
 lotus_group: lotus
+# Whether to create the Lotus system user defined above automatically
 create_lotus_system_user: true
+# What Node.JS version to use
 nodejs_version: 18.x
 nodejs_install_npm_user: "{{ lotus_user }}"
+# Skip the NVIDIA driver reboot. This should be set to true unless you have a good reason to set it to false.
 nvidia_driver_skip_reboot: true
+# We automatically reboot the node if we cannot detect a GPU, Lotus is being installed for the first time and install_nvidia_driver is true.
+# You may want to change this behaviour for your specific environment - if so, set this to true.
+lotus_nvidia_skip_reboot: false
+# By default we do not attempt to install the NVIDIA GPU drivers. This is to keep compatibility with AMD GPU-equipped systems.
+# Set this to true to install the drivers.
 install_nvidia_driver: false

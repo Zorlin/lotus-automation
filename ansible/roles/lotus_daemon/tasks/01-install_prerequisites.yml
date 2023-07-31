@@ -11,6 +11,7 @@
 - name: Install software dependencies
   ansible.builtin.package:
     name:
+      - acl
       - mesa-opencl-icd
       - ocl-icd-opencl-dev
       - gcc

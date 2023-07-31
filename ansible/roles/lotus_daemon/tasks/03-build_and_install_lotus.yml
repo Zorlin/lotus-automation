@@ -1,13 +1,4 @@
 ---
-- name: Check out Lotus
-  ansible.builtin.git:
-    repo: "{{ lotus_git_repo }}"
-    dest: "{{ build_dir }}/lotus"
-    version: "{{ lotus_version }}"
-    accept_newhostkey: true
-    recursive: true
-  become: false
-
 - name: Execute lscpu to get CPU flags
   command:
     cmd: lscpu
@@ -18,6 +9,14 @@
   set_fact:
     cpu_flags: "{{ lscpu_output.stdout_lines | join(' ') | regex_findall('\\b\\w+\\b') }}"
 
+- name: Set gpu_details to empty if it is not defined by the user
+  set_fact:
+    gpu_details: ""
+  when: gpu_details is not defined
+
+- name: Detect and set gpu_details if a NVIDIA card is present
+  include_tasks: 03a-detect_and_set_nvidia.yml
+
 - name: Check if SHA_NI or SHA256 exist in CPU flags
   set_fact:
     has_sha256: "{{ 'sha256' in cpu_flags }}"
@@ -25,14 +24,30 @@
 
 - name: Set build flags if SHA256 extensions were found
   set_fact:
-    build_flags: "export RUSTFLAGS="-C target-cpu=native -g ; export FFI_BUILD_FROM_SOURCE=1 ; export FFI_USE_MULTICORE_SDR=0"
-  when:
-    - has_sha256
-    - has_sha_ni
+    build_flags: "export RUSTFLAGS='-C target-cpu=native -g' ; export FFI_BUILD_FROM_SOURCE=1 ; export FFI_USE_MULTICORE_SDR=0; export RUST_GPU_TOOLS_CUSTOM_GPU='{{ gpu_details }}'"
+  when: has_sha256 or has_sha_ni
 
 - name: Set build flags if SHA256 extensions were not found
   set_fact:
-    build_flags: "export FFI_USE_MULTICORE_SDR=0"
-  when:
-    - not has_sha256
-    - not has_sha_ni
+    build_flags: "export FFI_USE_MULTICORE_SDR=0 ; export RUST_GPU_TOOLS_CUSTOM_GPU='{{ gpu_details }}'"
+  when: not has_sha256 and not has_sha_ni
+
+# TODO(bug): We build the Lotus repo as root to work around an Ansible bug - https://github.com/ansible/ansible/issues/80233
+# This is not ideal long term. We should be able to build as the lotus_user.
+
+# - name: Ensure Lotus checkout directory exists and is owned by lotus_user
+#   ansible.builtin.file:
+#     path: "{{ build_dir }}/lotus"
+#     state: directory
+#     owner: "{{ lotus_user }}"
+#     group: "{{ lotus_user }}"
+#     mode: '0755'
+
+- name: Check out Lotus
+  ansible.builtin.git:
+    repo: "{{ lotus_git_repo }}"
+    dest: "{{ build_dir }}/lotus"
+    version: "{{ lotus_version }}"
+    accept_newhostkey: true
+    recursive: true
+  become: true

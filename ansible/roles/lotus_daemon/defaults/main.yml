@@ -35,3 +35,6 @@ lotus_backup_base_path: "/opt/backup"
 # Choose location for lotus-miner and lotus. The chain is stored under LOTUS_PATH. This requires fast storage (SSD or NVMe)
 lotus_miner_path: "/opt/.lotusminer"
 lotus_path: "/opt/.lotus"
+
+# If true, skip the automatic reboot we perform if the NVIDIA driver is installed but the driver is not active
+lotus_nvidia_skip_reboot: false
