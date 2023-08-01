@@ -1,2 +1,13 @@
 ---
 # tasks file for lotus_miner
+# - name: Initialize Lotus miner
+#   include_tasks: 01-initialize_lotus_miner.yml
+
+- name: Install systemd service for Lotus miner and start Lotus miner
+  include_tasks: 02-systemd_lotus_miner.yml
+
+# - name: Announce Lotus miner
+#   include_tasks: 03-announce_lotus_miner.yml
+
+- name: Add storage
+  include_tasks: 04-add_storage.yml

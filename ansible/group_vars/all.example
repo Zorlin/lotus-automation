@@ -17,6 +17,16 @@ create_lotus_system_user: true
 nodejs_version: 18.x
 nodejs_install_npm_user: "{{ lotus_user }}"
 
+# Public (Lotus) IP address override. This is useful if you have multiple public IP addresses and want to bind Lotus to a specific one.
+# You can safely leave this unset if you only have one public IPV4 address or if it's the default public IP for your network.
+# If not set, we will attempt to automatically determine your public IP address using the service https://ifconfig.me.
+#lotus_public_ip: 101.234.123.234
+
+# Private (miner API) IP address override. This is useful if you have multiple private IP addresses and want to bind Lotus to a specific one.
+# This setting is MANDATORY if your Lotus miner node's private IP address is different from the default IP detected by Ansible -
+# which is likely to be the case if your miner is running in the cloud or has a semi-exotic networking setup.
+#lotus_miner_ip: 10.1.137.137
+
 # Port for Lotus Daemon to run on
 lotus_daemon_port: 1234
 

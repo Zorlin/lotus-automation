@@ -12,7 +12,7 @@ lotus_version: "v1.23.2"
 golang_version: "1.20.4"
 boost_version: "v1.7.2"
 
-# Build Lotus for Calibration testnet instead of mainnet: y / n
+# Build Lotus for Calibration testnet instead of mainnet: true / false
 # if "true", use the Faucet to give your wallets test FIL: https://faucet.calibration.fildev.network/
 use_calibrationnet: true
 
@@ -25,37 +25,23 @@ lotus_daemon_port: 1234
 # Port for libp2p host to run on
 lotus_libp2p_port: 6665
 
-# Port for miner to run on
-lotus_miner_port: 2345
-
-# Choose the sector size for your miner: 32GiB / 64GiB
-sector_size: "32GiB"
-
-# Choose location for the Lotus log file(s)
-log_dir: "/var/log/lotus"
-
 # Build directory for building software. Originally "${INSTALL_DIR}".
 build_dir: "/usr/local/src/"
-
-# Choose location for the miner proof cache. This needs to be fast storage, ideally NVMe, and requires ca.150GiB.
-param_cache: "/opt/cache/param_cache"
-parent_cache: "/opt/cache/parent_cache"
 
 # Choose location where Lotus backups will be stored
 lotus_backup_base_path: "/opt/backup"
 
-# Location for lotus and lotus-miner. The chain is stored under lotus_path. This requires fast storage (SSD or NVMe).
+# Location for lotus' chain and data repository. The chain is stored under lotus_path. This requires fast storage (SSD or NVMe).
 lotus_path: /opt/.lotus
-lotus_miner_path: /opt/.lotusminer
 
 # Where to store the API token for Lotus.
 lotus_api_token_file: "{{ lotus_path }}/api_token"
-
-# Where to store the API token for Lotus Miner.
-lotus_miner_api_token_file: "{{ lotus_miner_path }}/api_token"
 
 # If true, skip the automatic reboot we perform if the NVIDIA driver is installed but the driver is not active
 lotus_nvidia_skip_reboot: false
 
 # Minimum amount of FIL for a wallet to be considered funded. This is used to determine if a wallet is ready to be used for mining.
 wallet_fund_threshold: 0.1
+
+# If you are ready for mainnet, you know what to do here. See the docs if you're not sure!
+ready_for_mainnet: false

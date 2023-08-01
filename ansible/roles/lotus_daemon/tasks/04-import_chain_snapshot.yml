@@ -41,14 +41,23 @@
     group: "{{ lotus_group }}"
     mode: '0755'
 
-# TODO(bug): This task should only run if the chain has not been imported before.
+# TODO(bug): Chain snapshot import should only run if the chain has not been imported before.
+# As a basic check, we check for the existence of datastore/splitstore, but this may not be the best way to do this.
+# Need to talk to the Lotus team for clarification - Wings
+- name: Check if we have imported a chain snapshot before
+  ansible.builtin.stat:
+    path: "{{ lotus_path }}/datastore/splitstore"
+  register: chain_imported
+  become_user: "{{ lotus_user }}"
+  become: true
+
 - name: Import chain snapshot
   shell:
     cmd: "export LOTUS_PATH={{ lotus_path }} ; nohup lotus daemon --import-snapshot {{ chain_download_dir }}/latest.zst > {{ log_dir }}/lotus-import-snapshot.log 2>&1 &"
     executable: /bin/bash
   become_user: "{{ lotus_user }}"
   become: true
-  when: download_chain_snapshot_status.finished
+  when: download_chain_snapshot_status.finished and chain_imported.stat.exists == false
 
 - name: Wait for Lotus to import the chain snapshot (this will take a while, and show "FAILED" periodically until it succeeds)
   shell:
@@ -65,6 +74,8 @@
 # These steps are disabled as they don't actually seem to do anything -
 # without Lotus running as a daemon, no synchronisation occurs and any attempt to run "lotus sync wait" results in blank output from Lotus.
 # We may want to move these somewhere later in the playbook/roles, or remove them entirely.
+# (Update from Wings, later: We did move them, see 08-check_lotus_synced.yml
+# We'll remove the below code block permanently later)
 
 # - name: Synchronise Lotus with the network
 #   shell:

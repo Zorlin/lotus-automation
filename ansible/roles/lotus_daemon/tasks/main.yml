@@ -41,11 +41,5 @@
 - name: Check that Lotus is synced
   include_tasks: 08-check_lotus_synced.yml
 
-- name: Initialize Lotus miner
-  include_tasks: 09-initialize_lotus_miner.yml
-
-- name: Install systemd service for Lotus miner and start Lotus miner
-  include_tasks: 10-systemd_lotus_miner.yml
-
-- name: Bootstrap Lotus miner
-  include_tasks: 11-bootstrap_lotus_miner.yml
+- name: Check that Lotus is installed and appears to be working
+  include_tasks: 09-final_preflight.yml

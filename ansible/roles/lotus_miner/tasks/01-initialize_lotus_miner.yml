@@ -43,14 +43,12 @@
 
 - name: If the owner wallet does not exist yet, create it.
   shell: "export LOTUS_PATH={{ lotus_path }} ; lotus wallet new bls"
-  register: create_wallet
   become_user: "{{ lotus_user }}"
   become: true
   when: number_of_wallets == 0
 
 - name: If the worker wallet does not exist yet, create it.
   shell: "export LOTUS_PATH={{ lotus_path }} ; lotus wallet new bls"
-  register: create_wallet
   become_user: "{{ lotus_user }}"
   become: true
   # This when conditional is a little silly, but it should work consistently. We always want to create this second wallet if we create the first one.
@@ -70,7 +68,7 @@
   when: owner_wallet_address is defined and worker_wallet_address is defined
 
 - name: Prompt the user to transfer funds
-  include_tasks: 09a-transfer_funds.yml
+  include_tasks: 01a-transfer_funds.yml
 
 # Now that we have funds, we can initialise our SP
 - name: Check whether we need to initialise our SP
@@ -84,7 +82,7 @@
 
 # We deliberately only initialize the SP with specific error messages. This is to avoid accidentally initialising the SP when we don't need to.
 - name: Initialize our SP
-  include_tasks: 09b-initialize_sp.yml
+  include_tasks: 01b-initialize_sp.yml
   when: "miner_info.stdout_lines[0] == 'ERROR: could not get API info for StorageMiner: repo directory does not exist. Make sure your configuration is correct'"
 
 # Now that we have an SP, we can configure our miner

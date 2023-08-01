@@ -62,4 +62,44 @@
 
 - name: Set miner_api_info
   set_fact:
-    miner_api_info: "{{ lotus_miner_api_token }}:/ip4/${MINER_IP}/tcp/${MINER_PORT}/http"
+    miner_api_info: "{{ lotus_miner_api_token }}:/ip4/{{ lotus_miner_ip }}/tcp/{{ lotus_miner_port }}/http"
+
+# Get our public IP address if we haven't grabbed it already earlier in a play
+- name: Get public IPv4 address using ifconfig.me
+  ansible.builtin.uri:
+    url: https://ifconfig.me
+    return_content: yes
+    status_code: 200
+    validate_certs: false
+    http_agent: curl
+  register: public_ipv4
+  until: public_ipv4.status == 200
+  retries: 3
+  delay: 3
+  when: lotus_public_ip is not defined
+
+- name: If we now have a public IPv4 address, use it
+  set_fact:
+    lotus_public_ip: "{{ public_ipv4.content }}"
+  when: lotus_public_ip is not defined and public_ipv4.status == 200
+
+# Announce the miner
+- name: Print a message about announcing the miner
+  debug:
+    msg: "Announcing Lotus miner {{ lotus_public_ip }}:{{ lotus_miner_port }} on-chain..."
+  when: (ready_for_mainnet and not use_calibrationnet) or use_calibrationnet
+
+- name: If we are not using calibrationnet, but we are not explicitly ready_for_mainnet, exit with an error
+  fail:
+    msg: "You must set ready_for_mainnet to true in order to announce your mainnet miner on-chain. Check the docs for more information."
+  when: not ready_for_mainnet and not use_calibrationnet
+
+- name: Announce Lotus miner
+  shell:
+    cmd: "export LOTUS_PATH={{ lotus_path }} ; lotus-miner actor set-addrs --announce={{ lotus_public_ip }}:{{ lotus_libp2p_port }}"
+    executable: /bin/bash
+  become_user: "{{ lotus_user }}"
+  become: true
+  changed_when: false
+  ignore_errors: true
+  when: (ready_for_mainnet and not use_calibrationnet) or use_calibrationnet

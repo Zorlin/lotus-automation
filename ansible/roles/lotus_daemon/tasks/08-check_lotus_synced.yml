@@ -14,17 +14,9 @@
         msg: "Lotus daemon is synchronized with the public network. Continuing..."
       when: "'Height: 0' in lotus_sync_status.stdout"
 
-    - name: Debug lotus_sync_status.stdout
-      debug:
-        var: lotus_sync_status.stdout
-
-    - name: If Lotus is not synchronized, attempt to get the current stage from the output.
+    - name: If Lotus is not synchronized, attempt to get the current stage and block height from the output.
       set_fact:
         lotus_sync_stage: "{{ lotus_sync_status.stdout | regex_search('Stage: (.+)$', multiline=True) | regex_replace('^Stage: ', '') }}"
-      when: "'Height: 0' not in lotus_sync_status.stdout"
-
-    - name: If Lotus is not synchronized, attempt to get the remaining block height from the output.
-      set_fact:
         lotus_sync_height: "{{ lotus_sync_status.stdout | regex_findall('Height: (\\d+)') | first }}"
       when: "'Height: 0' not in lotus_sync_status.stdout"
 
