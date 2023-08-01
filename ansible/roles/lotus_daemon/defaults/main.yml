@@ -28,6 +28,9 @@ lotus_libp2p_port: 6665
 # Build directory for building software. Originally "${INSTALL_DIR}".
 build_dir: "/usr/local/src/"
 
+# Location for the Lotus log file(s)
+log_dir: "/var/log/lotus"
+
 # Choose location where Lotus backups will be stored
 lotus_backup_base_path: "/opt/backup"
 
@@ -39,6 +42,9 @@ lotus_api_token_file: "{{ lotus_path }}/api_token"
 
 # If true, skip the automatic reboot we perform if the NVIDIA driver is installed but the driver is not active
 lotus_nvidia_skip_reboot: false
+
+# By default we do not attempt to install the NVIDIA GPU drivers. This is to keep compatibility with AMD GPU-equipped systems.
+install_nvidia_driver: false
 
 # Minimum amount of FIL for a wallet to be considered funded. This is used to determine if a wallet is ready to be used for mining.
 wallet_fund_threshold: 0.1

@@ -22,8 +22,9 @@
   failed_when: false
   ignore_errors: true
 
-- name: Detect and set gpu_details if a NVIDIA card is present
+- name: Detect and set gpu_details if a NVIDIA card is present and we are installing the NVIDIA driver
   include_tasks: 03a-detect_and_set_nvidia.yml
+  when: install_nvidia_driver | bool
 
 - name: Check if SHA_NI or SHA256 exist in CPU flags
   set_fact:
