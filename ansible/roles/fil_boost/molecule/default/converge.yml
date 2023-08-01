@@ -9,7 +9,10 @@
     nodejs_install_npm_user: "{{ lotus_user }}"
     golang_version: "1.20.4"
     rustup_configure_shell: false
+    # Debug/testnet settings
     smoketest: true
+    use_calibrationnet: true
+    ready_for_mainnet: false
 
   tasks:
     - name: Update apt cache
