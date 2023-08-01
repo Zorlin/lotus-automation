@@ -71,3 +71,30 @@
 
 - name: Prompt the user to transfer funds
   include_tasks: 09a-transfer_funds.yml
+
+# Now that we have funds, we can initialise our SP
+- name: Check whether we need to initialise our SP
+  shell:
+    cmd: "export LOTUS_PATH={{ lotus_path }} ; lotus-miner info --miner-repo {{ lotus_miner_path }} info"
+  register: miner_info
+  become_user: "{{ lotus_user }}"
+  become: true
+  failed_when: false
+  ignore_errors: true
+
+# We deliberately only initialize the SP with specific error messages. This is to avoid accidentally initialising the SP when we don't need to.
+- name: Initialize our SP
+  include_tasks: 09b-initialize_sp.yml
+  when: "miner_info.stdout_lines[0] == 'ERROR: could not get API info for StorageMiner: repo directory does not exist. Make sure your configuration is correct'"
+
+# Now that we have an SP, we can configure our miner
+- name: Install initial miner configuration
+  template:
+    src: lotus-miner.toml.j2
+    dest: "{{ lotus_miner_path }}/config.toml"
+    owner: "{{ lotus_user }}"
+    group: "{{ lotus_group }}"
+    mode: '0644'
+    backup: true
+  notify:
+    - Restart Lotus miner

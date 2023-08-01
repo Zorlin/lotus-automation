@@ -29,6 +29,7 @@
         - new_api_token is defined
         - new_api_token.stdout | length > 0
         - new_api_token.rc == 0
+
     - name: Write API token to file if we retrieved it successfully
       ansible.builtin.copy:
         content: "{{ new_api_token.stdout }}"
@@ -40,6 +41,7 @@
         - new_api_token is defined
         - new_api_token.stdout | length > 0
         - new_api_token.rc == 0
+
     # Re-read the Lotus API token now that we have created it
     - name: Read Lotus API token from file
       ansible.builtin.shell:
@@ -50,6 +52,7 @@
       changed_when: false
       ignore_errors: true
       when: lotus_api_token_file is defined
+
   # We run all these tasks if we are unable to find a seemingly valid API token.
   when: lotus_api_token.stdout == "" or lotus_api_token.rc != 0
 

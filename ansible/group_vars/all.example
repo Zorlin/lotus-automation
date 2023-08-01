@@ -37,6 +37,9 @@ install_nvidia_driver: false
 # If we install the NVIDIA drivers, install the latest version
 nvidia_driver_ubuntu_cuda_package: "cuda-drivers-535"
 
+# Choose the sector size for your miner: 32GiB / 64GiB
+sector_size: "32GiB"
+
 # Minimum amount of FIL for a wallet to be considered funded. This is used to determine if a wallet is ready to be used for mining.
 wallet_fund_threshold: 0.1
 

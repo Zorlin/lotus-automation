@@ -30,7 +30,7 @@
   include_tasks: 04-import_chain_snapshot.yml
 
 - name: Install systemd service and environment for Lotus and start Lotus
-  include_tasks: 05-systemd_service.yml
+  include_tasks: 05-systemd_lotusd.yml
 
 - name: Synchronize and initialize Lotus
   include_tasks: 06-initialize_lotus.yml
@@ -43,3 +43,9 @@
 
 - name: Initialize Lotus miner
   include_tasks: 09-initialize_lotus_miner.yml
+
+- name: Install systemd service for Lotus miner and start Lotus miner
+  include_tasks: 10-systemd_lotus_miner.yml
+
+- name: Bootstrap Lotus miner
+  include_tasks: 11-bootstrap_lotus_miner.yml
