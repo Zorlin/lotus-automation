@@ -28,6 +28,7 @@
 
 - name: Download chain snapshots
   include_tasks: 04-import_chain_snapshot.yml
+  when: not smoketest
 
 - name: Install systemd service and environment for Lotus and start Lotus
   include_tasks: 05-systemd_lotusd.yml
@@ -40,6 +41,7 @@
 
 - name: Check that Lotus is synced
   include_tasks: 08-check_lotus_synced.yml
+  when: not smoketest
 
 - name: Check that Lotus is installed and appears to be working
   include_tasks: 09-final_preflight.yml
