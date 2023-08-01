@@ -36,13 +36,14 @@
 
 - name: Initialize Lotus miner
   shell:
-    cmd: "lotus-miner init --no-local-storage --owner={{ owner_wallet_address }} --worker={{ worker_wallet_address }} --sector-size={{ sector_size }}"
+    cmd: "lotus-miner --miner-repo {{ lotus_miner_path }} init --no-local-storage --owner={{ owner_wallet_address }} --worker={{ worker_wallet_address }} --sector-size={{ sector_size }}"
     executable: /bin/bash
     chdir: "{{ lotus_path }}"
-    # TODO(question) - is it necessary to specify the environment here?
-    environment:
-      LOTUS_PATH: "{{ lotus_path }}"
-      FIL_PROOFS_PARAMETER_CACHE: "{{ param_cache }}"
-      FIL_PROOFS_PARENT_CACHE: "{{ parent_cache }}"
-      LOTUS_SEALING_AGGREGATECOMMITS: "false"
-      LOTUS_SEALING_BATCHPRECOMMITS: "false"
+  become_user: "{{ lotus_user }}"
+  become: true
+  environment:
+    LOTUS_PATH: "{{ lotus_path }}"
+    FIL_PROOFS_PARAMETER_CACHE: "{{ param_cache }}"
+    FIL_PROOFS_PARENT_CACHE: "{{ parent_cache }}"
+    LOTUS_SEALING_AGGREGATECOMMITS: "false"
+    LOTUS_SEALING_BATCHPRECOMMITS: "false"

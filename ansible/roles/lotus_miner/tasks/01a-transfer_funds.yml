@@ -25,14 +25,15 @@
 - name: Pause to give the user a chance to transfer funds
   pause:
     prompt: "Press [ENTER] to continue once you have transferred funds to your wallets"
+  when: "owner_wallet_balance | float < wallet_fund_threshold or worker_wallet_balance | float < wallet_fund_threshold"
 
 # We loop until both balances have at least {{ wallet_fund_threshold }} FIL.
 - name: Waiting for both wallets to be funded with at least {{ wallet_fund_threshold }} FIL
   retries: 180
   delay: 10
   until: 
-    - "wallet_list.stdout_lines[1].split(' ')[2] | float >= wallet_fund_threshold"
-    - "wallet_list.stdout_lines[2].split(' ')[2] | float >= wallet_fund_threshold"
+    - "wallet_list_loop.stdout_lines[1].split(' ')[2] | float >= wallet_fund_threshold"
+    - "wallet_list_loop.stdout_lines[2].split(' ')[2] | float >= wallet_fund_threshold"
   shell: "export LOTUS_PATH={{ lotus_path }} ; lotus wallet list"
   register: wallet_list_loop
   changed_when: false

@@ -24,6 +24,7 @@
       ansible.builtin.shell:
         cmd: "export LOTUS_PATH={{ lotus_path }} ; lotus net reachability | grep 'Public'"
       register: libp2p_reachability
+      changed_when: false
       become_user: "{{ lotus_user }}"
       become: true
 

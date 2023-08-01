@@ -54,11 +54,17 @@
   # This when conditional is a little silly, but it should work consistently. We always want to create this second wallet if we create the first one.
   when: number_of_wallets == 1 or number_of_wallets == 0
 
-- name: If both wallets exist already, set the addresses for the owner and worker wallets
+- name: List existing wallets again if we created any
+  shell: "export LOTUS_PATH={{ lotus_path }} ; lotus wallet list"
+  register: wallet_list
+  become_user: "{{ lotus_user }}"
+  become: true
+  changed_when: false
+
+- name: Set the addresses for the owner and worker wallets
   set_fact:
     owner_wallet_address: "{{ wallet_list.stdout_lines[1].split(' ')[0] }}"
     worker_wallet_address: "{{ wallet_list.stdout_lines[2].split(' ')[0] }}"
-  when: number_of_wallets | int >= 2
 
 - name: Print owner and worker wallet addresses
   debug:
@@ -73,17 +79,44 @@
 # Now that we have funds, we can initialise our SP
 - name: Check whether we need to initialise our SP
   shell:
-    cmd: "export LOTUS_PATH={{ lotus_path }} ; lotus-miner info --miner-repo {{ lotus_miner_path }} info"
+    cmd: "export LOTUS_PATH={{ lotus_path }} ; lotus-miner --miner-repo {{ lotus_miner_path }} info"
   register: miner_info
   become_user: "{{ lotus_user }}"
   become: true
   failed_when: false
+  changed_when: false
   ignore_errors: true
 
+- name: Print the output of the miner info command
+  debug:
+    msg: "{{ miner_info.stderr_lines }}"
+  when: miner_info.stderr_lines is defined
+  
 # We deliberately only initialize the SP with specific error messages. This is to avoid accidentally initialising the SP when we don't need to.
+- name: Empty cache folders for initialisation
+  block:
+    - name: Scan for files in the cache folders
+      find:
+        paths: 
+          - "{{ param_cache }}"
+          - "{{ parent_cache }}"
+        file_type: "file"
+        patterns: "*"
+      register: cache_files_to_delete
+      become_user: "{{ lotus_user }}"
+      become: "true"
+    
+    - name: Delete files in the cache folders
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ cache_files_to_delete.files }}"
+
+  when: "miner_info.stderr_lines[0] == 'ERROR: could not get API info for StorageMiner: repo directory does not exist. Make sure your configuration is correct'"
+
 - name: Initialize our SP
   include_tasks: 01b-initialize_sp.yml
-  when: "miner_info.stdout_lines[0] == 'ERROR: could not get API info for StorageMiner: repo directory does not exist. Make sure your configuration is correct'"
+  when: "miner_info.stderr_lines[0] == 'ERROR: could not get API info for StorageMiner: repo directory does not exist. Make sure your configuration is correct'"
 
 # Now that we have an SP, we can configure our miner
 - name: Install initial miner configuration

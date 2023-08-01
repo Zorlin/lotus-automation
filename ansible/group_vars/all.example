@@ -4,8 +4,9 @@ lotus_user: lotus
 lotus_group: lotus
 
 # Location for lotus and lotus-miner. The chain is stored under lotus_path. This requires fast storage (SSD or NVMe).
-lotus_path: /opt/.lotus
-lotus_miner_path: /opt/.lotusminer
+# Defaults to ~/.lotus, ~/.lotusminer respectively (with "_calibnet" appended if use_calibrationnet is true).
+#lotus_path: "/opt/.lotus"
+#lotus_miner_path: "/opt/.lotusminer"
 
 # Location for the Lotus log file(s)
 log_dir: "/var/log/lotus"
@@ -44,7 +45,8 @@ lotus_nvidia_skip_reboot: false
 # Set this to true to install the drivers.
 install_nvidia_driver: false
 
-# If we install the NVIDIA drivers, install the latest version
+# If we install the NVIDIA drivers, install the latest version and use the CUDA versions
+nvidia_driver_ubuntu_install_from_cuda_repo: true
 nvidia_driver_ubuntu_cuda_package: "cuda-drivers-535"
 
 # Choose the sector size for your miner: 32GiB / 64GiB

@@ -35,7 +35,7 @@ log_dir: "/var/log/lotus"
 lotus_backup_base_path: "/opt/backup"
 
 # Location for lotus' chain and data repository. The chain is stored under lotus_path. This requires fast storage (SSD or NVMe).
-lotus_path: /opt/.lotus
+lotus_path: "/home/{{ lotus_user }}/.lotus{% if use_calibrationnet %}_calibnet{% endif %}"
 
 # Where to store the API token for Lotus.
 lotus_api_token_file: "{{ lotus_path }}/api_token"
