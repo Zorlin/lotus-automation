@@ -11,26 +11,6 @@
 - name: Install prerequisites
   include_tasks: 01-install_prerequisites.yml
 
-# create_boost_wallets
-- name: If the deals wallet does not exist yet, create it.
-  shell: "export LOTUS_PATH={{ lotus_path }} ; lotus wallet new bls"
-  register: create_wallet
-  become_user: "{{ lotus_user }}"
-  become: true
-  # We only want to proceed if the deals wallet doesn't exist but all other wallets do.
-  when: number_of_wallets | int == 2
-
-- name: If the collateral wallet does not exist yet, create it.
-  shell: "export LOTUS_PATH={{ lotus_path }} ; lotus wallet new bls"
-  register: create_wallet
-  become_user: "{{ lotus_user }}"
-  become: true
-  # We only want to proceed if the collateral wallet doesn't exist but all other wallets do.
-  when: number_of_wallets | int == 3
-
-- name: If both wallets exist already, set the addresses for the deals and collateral wallets
-  set_fact:
-    deals_wallet_address: "{{ wallet_list.stdout_lines[3].split(' ')[0] }}"
-    collateral_wallet_address: "{{ wallet_list.stdout_lines[4].split(' ')[0] }}"
-  when: number_of_wallets | int >= 4
-
+- name: Create Boost wallets
+  include_tasks: 02-create_boost_wallets.yml
+  when: not smoketest

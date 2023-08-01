@@ -43,5 +43,8 @@ lotus_nvidia_skip_reboot: false
 # Minimum amount of FIL for a wallet to be considered funded. This is used to determine if a wallet is ready to be used for mining.
 wallet_fund_threshold: 0.1
 
+# Skip wallet creation, chain sync and import and similar tasks. Just test building the software.
+smoketest: false
+
 # If you are ready for mainnet, you know what to do here. See the docs if you're not sure!
 ready_for_mainnet: false

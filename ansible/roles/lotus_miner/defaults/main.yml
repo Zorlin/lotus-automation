@@ -47,5 +47,8 @@ parent_cache: "/opt/cache/parent_cache"
 # Location for lotus miner's data repository.
 lotus_miner_path: /opt/.lotusminer
 
+# Skip wallet creation, chain sync and import and similar tasks. Just test building the software.
+smoketest: false
+
 # If you are ready for mainnet, you know what to do here. See the docs if you're not sure!
 ready_for_mainnet: false
